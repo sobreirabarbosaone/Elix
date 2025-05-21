@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="Icon Logo" type="ELIX" href="imagens/logo.ico">
+		<title>ELIX - LOGIN</title>
+	</head>
+	<body> <!-- CORPO INTEIRO DO SEU SITE-->
+		<header> <!-- ESPECIFICA O CABEÇALHO DA SUA PÁGINA -->
+			<nav class="logo"> <!-- NAV É UM LINK DE NAVEGAÇÃO E O CLASS É A CLASSE QUE DETERMINA PARA O SEU CSS -->
+			<img src="imagens/elixallfrig.png" alt="Logo da Empresa"/> <!-- IMG É O LINK PARA A IMAGEM E O SRC É A BUSCA POR ESSA IMAGEM E O ALT É APENAS O NOME QUE IRÁ APARECER -->
+		</header>
+	</body>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			background-color: #f0f0f0;
+			text-align: center;
+		}
+		.login-container {
+			max-width: 450px;
+			margin: 10px auto;
+			padding: 100px;
+			border: 1px solid #ccc;
+			border-radius: 80px;
+			background-color: #fff;
+			box-shadow: 0 0 10px rgba(0,0,0,0.1);
+		}
+		input {
+			width: 100%;
+			padding: 10px;
+			margin: 10px 0;
+			border: 1px solid #ccc;
+			border-radius: 40px;
+		}
+		button {
+			padding: 10px;
+			width: 105%;
+			background-color: #4CAF50;
+			border: none;
+			color: white;
+			cursor: pointer;
+			font-size: 16px;
+			border-radius: 40px;
+		}
+		button:hover {
+			background-color: #45a049;
+		}
+		.error-message {
+			color: red;
+			display: none;
+			margin-top: 10px;
+			text-align: center;
+		}
+	</style>
+	<div class="login-container">
+		<h2>Login - Dashboard ALL FRIG</h2>
+		<input type="text" id="username" placeholder="Nome de usuário">
+		<input type="password" id="password" placeholder="Senha">
+		<button onclick="verifyLogin()">Entrar</button>
+		<p class="error-message" id="error-message">Mensagem de erro aqui</p>
+	</div>
+	<script>
+		document.addEventListener("keydown", function(event) {
+			if (event.key === "Enter") {
+				verifyLogin();
+		}
+			});
+		async function verifyLogin() {
+			const username = document.getElementById("username").value.trim();
+			const password = document.getElementById("password").value.trim();
+			const errorMsg = document.getElementById("error-message");
+			errorMsg.style.display = "none";
+		if (!username || !password) {
+			errorMsg.innerText = "Preencha todos os campos.";
+			errorMsg.style.display = "block";
+			return;
+		}
+		try {
+			const response = await fetch("https://sheetdb.io/api/v1/o5f01mx7ghpr3");
+			const users = await response.json();
+			const user = users.find(u => u.name === username && u.password === password);
+
+		  if (user) {
+			localStorage.setItem("userLinks", JSON.stringify(user));
+			window.location.href = "dados.html";
+		  } else {
+			errorMsg.innerText = "Nome de usuário ou senha incorretos.";
+			errorMsg.style.display = "block";
+		  }
+		} catch (err) {
+		  console.error(err);
+		  errorMsg.innerText = "Erro ao acessar o banco de dados.";
+		  errorMsg.style.display = "block";
+		}
+	  }
+	</script>
+</html>
