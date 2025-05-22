@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ELIX - DASHBOARDS</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      text-align: center;
+      margin: 0;
+    }
+
+    nav.logo img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .tabs, .subtabs {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .tabs button, .subtabs button {
+      border: none;
+      border-radius: 40px;
+      padding: 14px 20px;
+      cursor: pointer;
+      font-size: 30px;
+    }
+
+    .tabs button.active, .subtabs button.active {
+      background-color: #ccc;
+    }
+
+    .tabcontent, .subtabcontent {
+      display: none;
+      padding: 20px;
+    }
+
+    iframe {
+      width: 100%;
+      height: 75vh;
+      border: none;
+    }
+
+    select {
+      font-size: 20px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      min-width: 150px;
+      cursor: pointer;
+    }
+
+    .logout-container {
+      text-align: right;
+      padding: 10px 20px;
+    }
+
+    .logout-container button {
+      padding: 8px 16px;
+      background-color: #cf0000;
+      color: white;
+      border: none;
+      border-radius: 40px;
+      cursor: pointer;
+      font-size: 30px;
+    }
+
+    .logout-container button:hover {
+      background-color: #c9302c;
+    }
+
+    .error-message {
+      color: red;
+    }
+
+    .select-group {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="logo">
+      <img src="imagens/elixallfrig.png" alt="Logo da Empresa" />
+    </nav>
+  </header>
+
+  <div class="logout-container">
+    <button onclick="logout()">Sair</button>
+  </div>
+
+  <h1>Painel de Controle</h1>
+
+  <div class="tabs">
+    <button class="tablink" onclick="openTab(event, 'Campanhas')" id="defaultOpen">Campanhas</button>
+    <button class="tablink" onclick="openTab(event, 'Metas')">Metas</button>
+    <button class="tablink" onclick="openTab(event, 'PEX')">PEX</button>
+    <button class="tablink" onclick="openTab(event, 'Fornecedor')">Fornecedor</button>
+    <button class="tablink" onclick="openTab(event, 'Ferias')">Férias</button>
+  </div>
+
+  <div id="Campanhas" class="tabcontent">
+    <h2>Campanhas</h2>
+    <div class="subtabs"></div>
+    <iframe id="campanhasIframe" src=""></iframe>
+  </div>
+
+  <div id="Metas" class="tabcontent">
+    <h2>Metas</h2>
+
+    <div class="select-group">
+      <select id="supervisorSelectMetas" onchange="atualizarVendedoresMetas()"></select>
+      <select id="vendedorSelectMetas" onchange="atualizarIframe('Metas')"></select>
+    </div>
+
+    <iframe id="metasIframe" src=""></iframe>
+  </div>
+
+  <div id="PEX" class="tabcontent">
+    <h2>PEX</h2>
+
+    <div class="select-group">
+      <select id="supervisorSelectPEX" onchange="atualizarVendedoresPEX()"></select>
+      <select id="vendedorSelectPEX" onchange="atualizarIframe('PEX')"></select>
+    </div>
+
+    <div class="subtabs">
+      <button class="subtablink" onclick="openSubTab(event, 'Extrato')" id="defaultSubPEX">Extrato</button>
+      <button class="subtablink" onclick="openSubTab(event, 'TopClientes')">Top Clientes</button>
+    </div>
+
+    <div id="Extrato" class="subtabcontent">
+      <h3>Extrato</h3>
+      <iframe id="extratoIframe" src=""></iframe>
+    </div>
+
+    <div id="TopClientes" class="subtabcontent">
+      <h3>Top Clientes</h3>
+      <iframe id="topClientesIframe" src=""></iframe>
+    </div>
+  </div>
+
+  <div id="Fornecedor" class="tabcontent">
+    <h2>Fornecedor</h2>
+    <div class="subtabs">
+      <button class="subtablink" onclick="openSubTabFornecedor(event, 'Ajinomoto')" id="defaultSubFornecedor">Ajinomoto</button>
+      <button class="subtablink" onclick="openSubTabFornecedor(event, 'Gyoza')">Gyoza</button>
+      <button class="subtablink" onclick="openSubTabFornecedor(event, 'Mapa')">Mapa de Fornecedores</button>
+      <button class="subtablink" onclick="openSubTabFornecedor(event, 'Vendas')">Vendas</button>
+    </div>
+
+    <div id="Ajinomoto" class="subtabcontent">
+      <h3>Ajinomoto</h3>
+      <iframe id="AjinomotoIframe" src=""></iframe>
+    </div>
+
+    <div id="Gyoza" class="subtabcontent">
+      <h3>Gyoza</h3>
+      <iframe id="GyozaIframe" src=""></iframe>
+    </div>
+
+    <div id="Mapa" class="subtabcontent">
+      <h3>Mapa de Fornecedores</h3>
+      <iframe id="MapaIframe" src=""></iframe>
+    </div>
+
+    <div id="Vendas" class="subtabcontent">
+      <h3>Vendas</h3>
+      <iframe id="VendasIframe" src=""></iframe>
+    </div>
+  </div>
+
+  <div id="Ferias" class="tabcontent">
+    <h2>Férias</h2>
+    <iframe id="FeriasIframe" src="https://docs.google.com/spreadsheets/d/1QqOoqwcp19AdfqaAcU7dKjmwp5sWAfU1eaPSgjNRq1k/edit?usp=drive_link"></iframe>
+  </div>
+
+  <p class="error-message" id="error-message"></p>
+
+  <script>
+    const apiUrl = "https://sheetdb.io/api/v1/5du6f6ry1uecy";
+    const userData = JSON.parse(localStorage.getItem("userLinks") || "{}");
+    let usuarios = [];
+
+    function openTab(evt, tabName) {
+      const contents = document.getElementsByClassName("tabcontent");
+      const buttons = document.getElementsByClassName("tablink");
+      for (let i = 0; i < contents.length; i++) contents[i].style.display = "none";
+      for (let i = 0; i < buttons.length; i++) buttons[i].classList.remove("active");
+      document.getElementById(tabName).style.display = "block";
+      evt.currentTarget.classList.add("active");
+    }
+
+    async function carregarUsuarios() {
+      try {
+        const res = await fetch(apiUrl);
+        usuarios = await res.json();
+        preencherSelectsMetas();
+        preencherSupervisoresPEX();
+      } catch (error) {
+        console.error("Erro ao carregar dados:", error);
+        document.getElementById("error-message").innerText = "Erro ao carregar dados.";
+      }
+    }
+
+    // Pega supervisores únicos
+    function getSupervisores() {
+      const supervisoresSet = new Set();
+      usuarios.forEach(u => {
+        if (u.role === "supervisor") supervisoresSet.add(u.name);
+      });
+      return Array.from(supervisoresSet).map(name => ({ name, role: "supervisor" }));
+    }
+
+    // Pega vendedores do supervisor
+    function getVendedoresPorSupervisor(supervisorNome) {
+      return usuarios.filter(u => u.supervisor === supervisorNome && u.role === "vendedor");
+    }
+
+    // -------- Metas --------
+    function preencherSelectsMetas() {
+      const supervisorSelect = document.getElementById("supervisorSelectMetas");
+      supervisorSelect.innerHTML = "";
+
+      if (userData.role === "supervisor") {
+        // Só o supervisor dele mesmo
+        const option = document.createElement("option");
+        option.value = userData.name;
+        option.textContent = userData.name;
+        supervisorSelect.appendChild(option);
+      } else if (userData.role === "vendedor") {
+        // Pega o supervisor do vendedor logado (assumindo que userData.supervisor existe)
+        const supNome = userData.supervisor || "";
+        if (supNome) {
+          const option = document.createElement("option");
+          option.value = supNome;
+          option.textContent = supNome;
+          supervisorSelect.appendChild(option);
+        }
+      } else {
+        // Para outros, mostra todos supervisores
+        const supervisores = getSupervisores();
+        supervisores.forEach(s => {
+          const option = document.createElement("option");
+          option.value = s.name;
+          option.textContent = s.name;
+          supervisorSelect.appendChild(option);
+        });
+      }
+
+      atualizarVendedoresMetas();
+    }
+
+    function atualizarVendedoresMetas() {
+      const supervisorSelect = document.getElementById("supervisorSelectMetas");
+      const vendedorSelect = document.getElementById("vendedorSelectMetas");
+      const supervisorSelecionado = supervisorSelect.value;
+
+      let vendedores = [];
+      if (userData.role === "vendedor") {
+        // vendedor vê só ele
+        vendedores = [userData];
+      } else {
+        vendedores = getVendedoresPorSupervisor(supervisorSelecionado);
+      }
+
+      vendedorSelect.innerHTML = "";
+      vendedores.forEach(v => {
+        const option = document.createElement("option");
+        option.value = v.name;
+        option.textContent = v.name;
+        vendedorSelect.appendChild(option);
+      });
+
+      atualizarIframe("Metas");
+    }
+
+    // -------- PEX --------
+    function preencherSupervisoresPEX() {
+      const supervisorSelectPEX = document.getElementById("supervisorSelectPEX");
+      supervisorSelectPEX.innerHTML = "";
+
+      if (userData.role === "supervisor") {
+        const option = document.createElement("option");
+        option.value = userData.name;
+        option.textContent = userData.name;
+        supervisorSelectPEX.appendChild(option);
+      } else if (userData.role === "vendedor") {
+        // Pega supervisor do vendedor logado
+        const supNome = userData.supervisor || "";
+        if (supNome) {
+          const option = document.createElement("option");
+          option.value = supNome;
+          option.textContent = supNome;
+          supervisorSelectPEX.appendChild(option);
+        }
+      } else {
+        const supervisores = getSupervisores();
+        supervisores.forEach(s => {
+          const option = document.createElement("option");
+          option.value = s.name;
+          option.textContent = s.name;
+          supervisorSelectPEX.appendChild(option);
+        });
+      }
+
+      atualizarVendedoresPEX();
+    }
+
+    function atualizarVendedoresPEX() {
+      const supervisorSelectPEX = document.getElementById("supervisorSelectPEX");
+      const vendedorSelectPEX = document.getElementById("vendedorSelectPEX");
+      const supervisorSelecionado = supervisorSelectPEX.value;
+
+      let vendedores = [];
+      if (userData.role === "vendedor") {
+        vendedores = [userData];
+      } else {
+        vendedores = getVendedoresPorSupervisor(supervisorSelecionado);
+      }
+
+      vendedorSelectPEX.innerHTML = "";
+      vendedores.forEach(v => {
+        const option = document.createElement("option");
+        option.value = v.name;
+        option.textContent = v.name;
+        vendedorSelectPEX.appendChild(option);
+      });
+
+      atualizarIframe("PEX");
+    }
+
+    // Atualiza iframes
+    function atualizarIframe(aba) {
+      let vendedorName;
+      if (aba === "Metas") {
+        vendedorName = document.getElementById("vendedorSelectMetas").value;
+      } else if (aba === "PEX") {
+        vendedorName = document.getElementById("vendedorSelectPEX").value;
+      }
+
+      const vendedor = usuarios.find(u => u.name === vendedorName);
+      if (!vendedor) return;
+
+      if (aba === "Metas") {
+        document.getElementById("metasIframe").src = vendedor.metasLink || "";
+      } else if (aba === "PEX") {
+        const defaultSubPEX = document.querySelector("#PEX .subtabs button.active") || document.getElementById("defaultSubPEX");
+        if (defaultSubPEX) defaultSubPEX.click();
+      }
+    }
+
+    function openSubTab(evt, subTabName) {
+      const subContents = document.querySelectorAll("#PEX .subtabcontent");
+      const subButtons = document.querySelectorAll("#PEX .subtablink");
+      subContents.forEach(c => (c.style.display = "none"));
+      subButtons.forEach(b => b.classList.remove("active"));
+
+      document.getElementById(subTabName).style.display = "block";
+      evt.currentTarget.classList.add("active");
+
+      const vendedorName = document.getElementById("vendedorSelectPEX").value;
+      const vendedor = usuarios.find(u => u.name === vendedorName);
+      if (!vendedor) return;
+
+      if (subTabName === "Extrato") {
+        document.getElementById("extratoIframe").src = vendedor.extratoLink || "";
+      } else if (subTabName === "TopClientes") {
+        document.getElementById("topClientesIframe").src = vendedor.topClientesLink || "";
+      }
+    }
+
+    // Campanhas
+    function atualizarIframeCampanhas() {
+      if (!userData.name) return;
+      const vendedor = usuarios.find(u => u.name === userData.name);
+      if (!vendedor) return;
+      document.getElementById("campanhasIframe").src = vendedor.campanhasLink || "";
+    }
+	
+    // Fornecedor
+    function openSubTabFornecedor(evt, subTabName) {
+      const subContents = document.querySelectorAll("#Fornecedor .subtabcontent");
+      const subButtons = document.querySelectorAll("#Fornecedor .subtablink");
+      subContents.forEach(c => (c.style.display = "none"));
+      subButtons.forEach(b => b.classList.remove("active"));
+
+      document.getElementById(subTabName).style.display = "block";
+      evt.currentTarget.classList.add("active");
+    }
+
+    function atualizarIframesFornecedor() {
+      if (!userData.name) return;
+      const fornecedor = usuarios.find(u => u.name === userData.name);
+      if (!fornecedor) return;
+
+      document.getElementById("AjinomotoIframe").src = fornecedor.ajinomotoLink || "";
+      document.getElementById("GyozaIframe").src = fornecedor.gyozaLink || "";
+      document.getElementById("MapaIframe").src = fornecedor.mapaLink || "";
+      document.getElementById("VendasIframe").src = fornecedor.vendasLink || "";
+    }
+
+    // Logout
+    function logout() {
+      if (confirm("Deseja realmente sair?")) {
+        localStorage.removeItem("userLinks");
+        window.location.href = "index.html";
+      }
+    }
+
+    // Bloqueia scroll enquanto o mouse estiver no iframe
+    function bloquearScrollDuranteUsoIframe() {
+      const iframes = document.querySelectorAll("iframe");
+      iframes.forEach(iframe => {
+        iframe.addEventListener("mouseenter", () => {
+          document.body.style.overflow = "hidden";
+        });
+        iframe.addEventListener("mouseleave", () => {
+          document.body.style.overflow = "auto";
+        });
+      });
+    }
+
+    // Inicialização
+    window.onload = async () => {
+      if (!userData.name) {
+        window.location.href = "index.html";
+        return;
+      }
+
+      await carregarUsuarios();
+
+      atualizarIframeCampanhas();
+      atualizarIframesFornecedor();
+
+      document.getElementById("defaultOpen").click();
+      document.getElementById("defaultSubFornecedor").click();
+      document.getElementById("defaultSubPEX").click();
+
+      bloquearScrollDuranteUsoIframe();
+    };
+  </script>
+</body>
+</html>
