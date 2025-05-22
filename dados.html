@@ -155,7 +155,7 @@
       const errorMsg = document.getElementById("error-message");
 
       if (!userData) {
-        window.location.href = "login.html";
+        window.location.href = "index.html";
         return;
       }
 
@@ -176,7 +176,7 @@
       const confirmLogout = confirm("Deseja realmente sair?");
       if (confirmLogout) {
         localStorage.removeItem("userLinks");
-        window.location.href = "login.html";
+        window.location.href = "index.html";
       }
     }
 
